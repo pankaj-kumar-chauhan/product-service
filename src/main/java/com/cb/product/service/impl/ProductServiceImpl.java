@@ -7,7 +7,6 @@ import com.cb.product.record.ProductRecord;
 import com.cb.product.repository.ProductRepository;
 import com.cb.product.service.ProductService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
