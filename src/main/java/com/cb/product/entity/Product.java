@@ -1,5 +1,6 @@
 package com.cb.product.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Document("CB_PRODUCT")
 public class Product {
 
