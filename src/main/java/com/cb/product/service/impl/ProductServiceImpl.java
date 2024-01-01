@@ -29,7 +29,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductRecord save(ProductRecord productRecord) {
         Product product = productMapper.productRecordToProduct(productRecord);
-        productRepository.save(product);
+        product  = productRepository.save(product);
         return productMapper.productToProductRecord(product);
     }
 
