@@ -40,37 +40,15 @@ class ProductControllerTest {
 
     @BeforeEach
     void setup() {
-        productRecord = new ProductRecord("6590722a46eb225aac1cfd22", "iPhone 14", new BigDecimal("58999"),
-                "iPhone 14 (128 GB) - Midnight", """
-                About this item
-                15.40 cm (6.1-inch) Super Retina XDR display
-                Advanced camera system for better photos in any light
-                Cinematic mode now in 4K Dolby Vision up to 30 fps
-                Action mode for smooth, steady, handheld videos
-                Vital safety technology — Crash Detection calls for help when you can’t
-                All-day battery life and up to 20 hours of video playback
-                Industry-leading durability features with Ceramic Shield and water resistance
-                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
-                iOS 16 offers even more ways to personalise, communicate and share
-                """, "", "",
+        productRecord = new ProductRecord("testID", "testName", new BigDecimal("20.30"),
+                "testShortDesc", "testLongDesc", "", "",
                 null, null, null, true);
     }
 
     @Test
     void saveTest() throws Exception {
-        productRecord = new ProductRecord(null, "iPhone 14", new BigDecimal("58999"),
-                "iPhone 14 (128 GB) - Midnight", """
-                About this item
-                15.40 cm (6.1-inch) Super Retina XDR display
-                Advanced camera system for better photos in any light
-                Cinematic mode now in 4K Dolby Vision up to 30 fps
-                Action mode for smooth, steady, handheld videos
-                Vital safety technology — Crash Detection calls for help when you can’t
-                All-day battery life and up to 20 hours of video playback
-                Industry-leading durability features with Ceramic Shield and water resistance
-                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
-                iOS 16 offers even more ways to personalise, communicate and share
-                """, "", "",
+        productRecord = new ProductRecord(null, "testName", new BigDecimal("20.30"),
+                "testShortDesc", "testLongDesc", "", "",
                 null, null, null, true);
         when(productService.save(productRecord)).thenReturn(productRecord);
         mockMvc.perform(post("/api/v1/product")
@@ -80,21 +58,10 @@ class ProductControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", is("iPhone 14")))
-                .andExpect(jsonPath("$.price", is(58999)))
-                .andExpect(jsonPath("$.shortDesc", is("iPhone 14 (128 GB) - Midnight")))
-                .andExpect(jsonPath("$.longDesc", is("""
-                About this item
-                15.40 cm (6.1-inch) Super Retina XDR display
-                Advanced camera system for better photos in any light
-                Cinematic mode now in 4K Dolby Vision up to 30 fps
-                Action mode for smooth, steady, handheld videos
-                Vital safety technology — Crash Detection calls for help when you can’t
-                All-day battery life and up to 20 hours of video playback
-                Industry-leading durability features with Ceramic Shield and water resistance
-                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
-                iOS 16 offers even more ways to personalise, communicate and share
-                """)))
+                .andExpect(jsonPath("$.name", is("testName")))
+                .andExpect(jsonPath("$.price", is(20.30)))
+                .andExpect(jsonPath("$.shortDesc", is("testShortDesc")))
+                .andExpect(jsonPath("$.longDesc", is("testLongDesc")))
                 .andExpect(jsonPath("$.active", is(true)));
     }
 
@@ -108,103 +75,56 @@ class ProductControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is("6590722a46eb225aac1cfd22")))
-                .andExpect(jsonPath("$.name", is("iPhone 14")))
-                .andExpect(jsonPath("$.price", is(58999)))
-                .andExpect(jsonPath("$.shortDesc", is("iPhone 14 (128 GB) - Midnight")))
-                .andExpect(jsonPath("$.longDesc", is("""
-                About this item
-                15.40 cm (6.1-inch) Super Retina XDR display
-                Advanced camera system for better photos in any light
-                Cinematic mode now in 4K Dolby Vision up to 30 fps
-                Action mode for smooth, steady, handheld videos
-                Vital safety technology — Crash Detection calls for help when you can’t
-                All-day battery life and up to 20 hours of video playback
-                Industry-leading durability features with Ceramic Shield and water resistance
-                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
-                iOS 16 offers even more ways to personalise, communicate and share
-                """)))
+                .andExpect(jsonPath("$.id", is("testID")))
+                .andExpect(jsonPath("$.name", is("testName")))
+                .andExpect(jsonPath("$.price", is(20.30)))
+                .andExpect(jsonPath("$.shortDesc", is("testShortDesc")))
+                .andExpect(jsonPath("$.longDesc", is("testLongDesc")))
                 .andExpect(jsonPath("$.active", is(true)));
     }
 
     @Test
     void getProductTest() throws Exception {
-        when(productService.getProduct("6590722a46eb225aac1cfd22")).thenReturn(productRecord);
-        mockMvc.perform(get("/api/v1/product/6590722a46eb225aac1cfd22"))
+        when(productService.getProduct("testID")).thenReturn(productRecord);
+        mockMvc.perform(get("/api/v1/product/testID"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is("6590722a46eb225aac1cfd22")))
-                .andExpect(jsonPath("$.name", is("iPhone 14")))
-                .andExpect(jsonPath("$.price", is(58999)))
-                .andExpect(jsonPath("$.shortDesc", is("iPhone 14 (128 GB) - Midnight")))
-                .andExpect(jsonPath("$.longDesc", is("""
-                About this item
-                15.40 cm (6.1-inch) Super Retina XDR display
-                Advanced camera system for better photos in any light
-                Cinematic mode now in 4K Dolby Vision up to 30 fps
-                Action mode for smooth, steady, handheld videos
-                Vital safety technology — Crash Detection calls for help when you can’t
-                All-day battery life and up to 20 hours of video playback
-                Industry-leading durability features with Ceramic Shield and water resistance
-                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
-                iOS 16 offers even more ways to personalise, communicate and share
-                """)))
+                .andExpect(jsonPath("$.id", is("testID")))
+                .andExpect(jsonPath("$.name", is("testName")))
+                .andExpect(jsonPath("$.price", is(20.30)))
+                .andExpect(jsonPath("$.shortDesc", is("testShortDesc")))
+                .andExpect(jsonPath("$.longDesc", is("testLongDesc")))
                 .andExpect(jsonPath("$.active", is(true)));
     }
 
     @Test
     void getAllProductTest() throws Exception {
-        ProductRecord productRecord2 = new ProductRecord("6590722a46eb225aac1cfd23", "iPhone 13", new BigDecimal("49999"),
-                "iPhone 13 (128GB) - Purple", """
-                About this item
-                15 cm (6.1-inch) Super Retina XDR display
-                Cinematic mode adds shallow depth of field and shifts focus automatically in your videos
-                Advanced dual-camera system with 12MP Wide and Ultra Wide cameras; Photographic Styles, Smart HDR 4, Night mode, 4K Dolby Vision HDR recording
-                12MP TrueDepth front camera with Night mode, 4K Dolby Vision HDR recording
-                A15 Bionic chip for lightning-fast performance
-                """, "", "",
+        ProductRecord productRecord2 = new ProductRecord("testID2", "testName2", new BigDecimal("30.30"),
+                "testShortDesc2", "testLongDesc2", "", "",
                 null, null, null, false);
         when(productService.getAllProducts()).thenReturn(Arrays.asList(productRecord, productRecord2));
         mockMvc.perform(get("/api/v1/product"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[0].id", is("6590722a46eb225aac1cfd22")))
-                .andExpect(jsonPath("$.[0].name", is("iPhone 14")))
-                .andExpect(jsonPath("$.[0].price", is(58999)))
-                .andExpect(jsonPath("$.[0].shortDesc", is("iPhone 14 (128 GB) - Midnight")))
-                .andExpect(jsonPath("$.[0].longDesc", is("""
-                About this item
-                15.40 cm (6.1-inch) Super Retina XDR display
-                Advanced camera system for better photos in any light
-                Cinematic mode now in 4K Dolby Vision up to 30 fps
-                Action mode for smooth, steady, handheld videos
-                Vital safety technology — Crash Detection calls for help when you can’t
-                All-day battery life and up to 20 hours of video playback
-                Industry-leading durability features with Ceramic Shield and water resistance
-                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
-                iOS 16 offers even more ways to personalise, communicate and share
-                """)))
+                .andExpect(jsonPath("$.[0].id", is("testID")))
+                .andExpect(jsonPath("$.[0].name", is("testName")))
+                .andExpect(jsonPath("$.[0].price", is(20.30)))
+                .andExpect(jsonPath("$.[0].shortDesc", is("testShortDesc")))
+                .andExpect(jsonPath("$.[0].longDesc", is("testLongDesc")))
                 .andExpect(jsonPath("$.[0].active", is(true)))
-                .andExpect(jsonPath("$.[1].id", is("6590722a46eb225aac1cfd23")))
-                .andExpect(jsonPath("$.[1].name", is("iPhone 13")))
-                .andExpect(jsonPath("$.[1].price", is(49999)))
-                .andExpect(jsonPath("$.[1].shortDesc", is("iPhone 13 (128GB) - Purple")))
-                .andExpect(jsonPath("$.[1].longDesc", is("""
-                About this item
-                15 cm (6.1-inch) Super Retina XDR display
-                Cinematic mode adds shallow depth of field and shifts focus automatically in your videos
-                Advanced dual-camera system with 12MP Wide and Ultra Wide cameras; Photographic Styles, Smart HDR 4, Night mode, 4K Dolby Vision HDR recording
-                12MP TrueDepth front camera with Night mode, 4K Dolby Vision HDR recording
-                A15 Bionic chip for lightning-fast performance
-                """)))
+                .andExpect(jsonPath("$.[1].id", is("testID2")))
+                .andExpect(jsonPath("$.[1].name", is("testName2")))
+                .andExpect(jsonPath("$.[1].price", is(30.30)))
+                .andExpect(jsonPath("$.[1].shortDesc", is("testShortDesc2")))
+                .andExpect(jsonPath("$.[1].longDesc", is("testLongDesc2")))
                 .andExpect(jsonPath("$.[1].active", is(false)));
     }
 
     @Test
     void deleteProductTest() throws Exception {
-        mockMvc.perform(delete("/api/v1/product/6590722a46eb225aac1cfd22"))
+        mockMvc.perform(delete("/api/v1/product/testID"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

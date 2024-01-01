@@ -38,72 +38,28 @@ class ProductServiceTest {
 
     @BeforeEach
     void setup() {
-        product = new Product("6590722a46eb225aac1cfd22", "iPhone 14", new BigDecimal("58999"),
-                "iPhone 14 (128 GB) - Midnight", """
-                About this item
-                15.40 cm (6.1-inch) Super Retina XDR display
-                Advanced camera system for better photos in any light
-                Cinematic mode now in 4K Dolby Vision up to 30 fps
-                Action mode for smooth, steady, handheld videos
-                Vital safety technology — Crash Detection calls for help when you can’t
-                All-day battery life and up to 20 hours of video playback
-                Industry-leading durability features with Ceramic Shield and water resistance
-                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
-                iOS 16 offers even more ways to personalise, communicate and share
-                """, "", "",
+        product = new Product("testID", "testName", new BigDecimal("20.30"),
+                "testShortDesc", "testLongDesc", "", "",
                 null, null, null, true);
 
-        productRecord = new ProductRecord(null, "iPhone 14", new BigDecimal("58999"),
-                "iPhone 14 (128 GB) - Midnight", """
-                About this item
-                15.40 cm (6.1-inch) Super Retina XDR display
-                Advanced camera system for better photos in any light
-                Cinematic mode now in 4K Dolby Vision up to 30 fps
-                Action mode for smooth, steady, handheld videos
-                Vital safety technology — Crash Detection calls for help when you can’t
-                All-day battery life and up to 20 hours of video playback
-                Industry-leading durability features with Ceramic Shield and water resistance
-                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
-                iOS 16 offers even more ways to personalise, communicate and share
-                """, "", "",
+        productRecord = new ProductRecord(null, "testName", new BigDecimal("20.30"),
+                "testShortDesc", "testLongDesc", "", "",
                 null, null, null, true);
     }
 
     @Test
     void saveTest() {
-        Product productToSave = new Product(null, "iPhone 14", new BigDecimal("58999"),
-                "iPhone 14 (128 GB) - Midnight", """
-                About this item
-                15.40 cm (6.1-inch) Super Retina XDR display
-                Advanced camera system for better photos in any light
-                Cinematic mode now in 4K Dolby Vision up to 30 fps
-                Action mode for smooth, steady, handheld videos
-                Vital safety technology — Crash Detection calls for help when you can’t
-                All-day battery life and up to 20 hours of video playback
-                Industry-leading durability features with Ceramic Shield and water resistance
-                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
-                iOS 16 offers even more ways to personalise, communicate and share
-                """, "", "",
+        Product productToSave = new Product(null, "testName", new BigDecimal("20.30"),
+                "testShortDesc", "testLongDesc", "", "",
                 null, null, null, true);
         when(productRepository.save(productToSave)).thenReturn(product);
         ProductRecord productRecordSaved = productService.save(productRecord);
 
-        assertEquals("6590722a46eb225aac1cfd22", productRecordSaved.id());
-        assertEquals("iPhone 14", productRecordSaved.name());
-        assertEquals(new BigDecimal("58999"), productRecordSaved.price());
-        assertEquals("iPhone 14 (128 GB) - Midnight", productRecordSaved.shortDesc());
-        assertEquals("""
-                About this item
-                15.40 cm (6.1-inch) Super Retina XDR display
-                Advanced camera system for better photos in any light
-                Cinematic mode now in 4K Dolby Vision up to 30 fps
-                Action mode for smooth, steady, handheld videos
-                Vital safety technology — Crash Detection calls for help when you can’t
-                All-day battery life and up to 20 hours of video playback
-                Industry-leading durability features with Ceramic Shield and water resistance
-                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
-                iOS 16 offers even more ways to personalise, communicate and share
-                """, productRecordSaved.longDesc());
+        assertEquals("testID", productRecordSaved.id());
+        assertEquals("testName", productRecordSaved.name());
+        assertEquals(new BigDecimal("20.30"), productRecordSaved.price());
+        assertEquals("testShortDesc", productRecordSaved.shortDesc());
+        assertEquals("testLongDesc", productRecordSaved.longDesc());
         assertTrue(productRecordSaved.active());
         verify(productRepository, times(1)).save(productToSave);
         verify(productMapper, times(1)).productRecordToProduct(productRecord);
@@ -112,49 +68,31 @@ class ProductServiceTest {
 
     @Test
     void getProductTest(){
-        when(productRepository.findById("6590722a46eb225aac1cfd22")).thenReturn(Optional.of(product));
-        ProductRecord productRecordFound = productService.getProduct("6590722a46eb225aac1cfd22");
-        assertEquals("6590722a46eb225aac1cfd22", productRecordFound.id());
-        assertEquals("iPhone 14", productRecordFound.name());
-        assertEquals(new BigDecimal("58999"), productRecordFound.price());
-        assertEquals("iPhone 14 (128 GB) - Midnight", productRecordFound.shortDesc());
-        assertEquals("""
-                About this item
-                15.40 cm (6.1-inch) Super Retina XDR display
-                Advanced camera system for better photos in any light
-                Cinematic mode now in 4K Dolby Vision up to 30 fps
-                Action mode for smooth, steady, handheld videos
-                Vital safety technology — Crash Detection calls for help when you can’t
-                All-day battery life and up to 20 hours of video playback
-                Industry-leading durability features with Ceramic Shield and water resistance
-                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
-                iOS 16 offers even more ways to personalise, communicate and share
-                """, productRecordFound.longDesc());
+        when(productRepository.findById("testID")).thenReturn(Optional.of(product));
+        ProductRecord productRecordFound = productService.getProduct("testID");
+        assertEquals("testID", productRecordFound.id());
+        assertEquals("testName", productRecordFound.name());
+        assertEquals(new BigDecimal("20.30"), productRecordFound.price());
+        assertEquals("testShortDesc", productRecordFound.shortDesc());
+        assertEquals("testLongDesc", productRecordFound.longDesc());
         assertTrue(productRecordFound.active());
-        verify(productRepository, times(1)).findById("6590722a46eb225aac1cfd22");
+        verify(productRepository, times(1)).findById("testID");
         verify(productMapper, times(1)).productToProductRecord(product);
     }
 
     @Test
     void getProductRecordNotFoundExceptionTest() {
-        when(productRepository.findById("6590722a46eb225aac1cfd22")).thenReturn(Optional.empty());
-        Exception exception = assertThrows(RecordNotFoundException.class, () -> productService.getProduct("6590722a46eb225aac1cfd22"));
-        assertEquals("Product with ID [6590722a46eb225aac1cfd22] not found", exception.getMessage());
-        verify(productRepository, times(1)).findById("6590722a46eb225aac1cfd22");
+        when(productRepository.findById("testID")).thenReturn(Optional.empty());
+        Exception exception = assertThrows(RecordNotFoundException.class, () -> productService.getProduct("testID"));
+        assertEquals("Product with ID [testID] not found", exception.getMessage());
+        verify(productRepository, times(1)).findById("testID");
         verify(productMapper, times(0)).productToProductRecord(product);
     }
 
     @Test
     void getAllProductsTest(){
-       Product product2 = new Product("6590722a46eb225aac1cfd23", "iPhone 13", new BigDecimal("48999"),
-                "iPhone 13 (128GB) - Purple", """
-                About this item
-                15 cm (6.1-inch) Super Retina XDR display
-                Cinematic mode adds shallow depth of field and shifts focus automatically in your videos
-                Advanced dual-camera system with 12MP Wide and Ultra Wide cameras; Photographic Styles, Smart HDR 4, Night mode, 4K Dolby Vision HDR recording
-                12MP TrueDepth front camera with Night mode, 4K Dolby Vision HDR recording
-                A15 Bionic chip for lightning-fast performance
-                """, "", "",
+       Product product2 = new Product("testID2", "testName2", new BigDecimal("30.30"),
+                "testShortDesc2", "testLongDesc2", "", "",
                 null, null, null, false);
         when(productRepository.findAll()).thenReturn(Arrays.asList(product,product2));
         List<ProductRecord> allProducts = productService.getAllProducts();
@@ -162,72 +100,43 @@ class ProductServiceTest {
         assertEquals(2,allProducts.size());
 
         ProductRecord productRecordFound = allProducts.get(0);
-        assertEquals("6590722a46eb225aac1cfd22", productRecordFound.id());
-        assertEquals("iPhone 14", productRecordFound.name());
-        assertEquals(new BigDecimal("58999"), productRecordFound.price());
-        assertEquals("iPhone 14 (128 GB) - Midnight", productRecordFound.shortDesc());
-        assertEquals("""
-                About this item
-                15.40 cm (6.1-inch) Super Retina XDR display
-                Advanced camera system for better photos in any light
-                Cinematic mode now in 4K Dolby Vision up to 30 fps
-                Action mode for smooth, steady, handheld videos
-                Vital safety technology — Crash Detection calls for help when you can’t
-                All-day battery life and up to 20 hours of video playback
-                Industry-leading durability features with Ceramic Shield and water resistance
-                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
-                iOS 16 offers even more ways to personalise, communicate and share
-                """, productRecordFound.longDesc());
+        assertEquals("testID", productRecordFound.id());
+        assertEquals("testName", productRecordFound.name());
+        assertEquals(new BigDecimal("20.30"), productRecordFound.price());
+        assertEquals("testShortDesc", productRecordFound.shortDesc());
+        assertEquals("testLongDesc", productRecordFound.longDesc());
         assertTrue(productRecordFound.active());
 
         productRecordFound = allProducts.get(1);
-        assertEquals("6590722a46eb225aac1cfd23", productRecordFound.id());
-        assertEquals("iPhone 13", productRecordFound.name());
-        assertEquals(new BigDecimal("48999"), productRecordFound.price());
-        assertEquals("iPhone 13 (128GB) - Purple", productRecordFound.shortDesc());
-        assertEquals("""
-                About this item
-                15 cm (6.1-inch) Super Retina XDR display
-                Cinematic mode adds shallow depth of field and shifts focus automatically in your videos
-                Advanced dual-camera system with 12MP Wide and Ultra Wide cameras; Photographic Styles, Smart HDR 4, Night mode, 4K Dolby Vision HDR recording
-                12MP TrueDepth front camera with Night mode, 4K Dolby Vision HDR recording
-                A15 Bionic chip for lightning-fast performance
-                """, productRecordFound.longDesc());
+        assertEquals("testID2", productRecordFound.id());
+        assertEquals("testName2", productRecordFound.name());
+        assertEquals(new BigDecimal("30.30"), productRecordFound.price());
+        assertEquals("testShortDesc2", productRecordFound.shortDesc());
+        assertEquals("testLongDesc2", productRecordFound.longDesc());
         assertFalse(productRecordFound.active());
     }
 
     @Test
     void deleteProductTest(){
-        when(productRepository.findById("6590722a46eb225aac1cfd22")).thenReturn(Optional.of(product));
+        when(productRepository.findById("testID")).thenReturn(Optional.of(product));
         when(productRepository.save(product)).thenReturn(product);
-        productService.deleteProduct("6590722a46eb225aac1cfd22");
+        productService.deleteProduct("testID");
 
-        assertEquals("6590722a46eb225aac1cfd22", product.getId());
-        assertEquals("iPhone 14", product.getName());
-        assertEquals(new BigDecimal("58999"), product.getPrice());
-        assertEquals("iPhone 14 (128 GB) - Midnight", product.getShortDesc());
-        assertEquals("""
-                About this item
-                15.40 cm (6.1-inch) Super Retina XDR display
-                Advanced camera system for better photos in any light
-                Cinematic mode now in 4K Dolby Vision up to 30 fps
-                Action mode for smooth, steady, handheld videos
-                Vital safety technology — Crash Detection calls for help when you can’t
-                All-day battery life and up to 20 hours of video playback
-                Industry-leading durability features with Ceramic Shield and water resistance
-                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
-                iOS 16 offers even more ways to personalise, communicate and share
-                """, product.getLongDesc());
+        assertEquals("testID", product.getId());
+        assertEquals("testName", product.getName());
+        assertEquals(new BigDecimal("20.30"), product.getPrice());
+        assertEquals("testShortDesc", product.getShortDesc());
+        assertEquals("testLongDesc", product.getLongDesc());
         assertNotNull(product.getDeletedOn());
         assertFalse(product.getActive());
     }
 
     @Test
     void deleteProductRecordNotFoundExceptionTest() {
-        when(productRepository.findById("6590722a46eb225aac1cfd22")).thenReturn(Optional.empty());
-        Exception exception = assertThrows(RecordNotFoundException.class, () -> productService.deleteProduct("6590722a46eb225aac1cfd22"));
-        assertEquals("Product with ID [6590722a46eb225aac1cfd22] not found", exception.getMessage());
-        verify(productRepository, times(1)).findById("6590722a46eb225aac1cfd22");
+        when(productRepository.findById("testID")).thenReturn(Optional.empty());
+        Exception exception = assertThrows(RecordNotFoundException.class, () -> productService.deleteProduct("testID"));
+        assertEquals("Product with ID [testID] not found", exception.getMessage());
+        verify(productRepository, times(1)).findById("testID");
         verify(productRepository, times(0)).save(product);
     }
 }
