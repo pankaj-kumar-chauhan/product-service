@@ -83,6 +83,34 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.1</version>
+				<executions>
+					<execution>
+						<id>default-testCompile</id>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<phase>test-compile</phase>
+						<configuration>
+							<outputDirectory>${basedir}/target/test-classes</outputDirectory>
+							<compileSourceRoots>
+								<sourceRoot>${basedir}/src/test/java</sourceRoot>
+							</compileSourceRoots>
+						</configuration>
+					</execution>
+					<execution>
+						<id>compile-integration-tests</id>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<phase>pre-integration-test</phase>
+						<configuration>
+							<outputDirectory>${basedir}/target/integration-test-classes</outputDirectory>
+							<compileSourceRoots>
+								<sourceRoot>${basedir}/src/integration-test/java</sourceRoot>
+							</compileSourceRoots>
+						</configuration>
+					</execution>
+				</executions>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -109,6 +137,89 @@
 						</compilerArg>
 					</compilerArgs>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.3.1</version>
+				<executions>
+					<execution>
+						<id>default-testResources</id>
+						<goals>
+							<goal>testResources</goal>
+						</goals>
+						<phase>process-test-resources</phase>
+						<configuration>
+							<outputDirectory>${basedir}/target/test-classes</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${basedir}/src/test/resources</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>add-integration-test-resources</id>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<phase>pre-integration-test</phase>
+						<configuration>
+							<outputDirectory>${basedir}/target/integration-test-classes</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${basedir}/src/integration-test/resources</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.1.2</version>
+				<configuration>
+					<testClassesDirectory>${basedir}/target/test-classes</testClassesDirectory>
+					<testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
+					<includes>
+						<include>**/*.class</include>
+					</includes>
+					<!--<argLine>${jacoco.agent.ut.arg}</argLine>-->
+					<testFailureIgnore>false</testFailureIgnore>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>3.2.3</version>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include>**/*.class</include>
+							</includes>
+							<classesDirectory>${project.build.outputDirectory}</classesDirectory>
+							<testClassesDirectory>${basedir}/target/integration-test-classes</testClassesDirectory>
+							<testSourceDirectory>${basedir}/src/integration-test/java</testSourceDirectory>
+						</configuration>
+					</execution>
+					<execution>
+						<id>verify</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<testFailureIgnore>false</testFailureIgnore>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

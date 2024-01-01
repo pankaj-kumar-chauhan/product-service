@@ -20,5 +20,5 @@ public record ProductRecord(String id,
                             String image,
                             LocalDateTime createdOn,
                             LocalDateTime updatedOn,
-                            LocalDateTime deletedOn) {
+                            LocalDateTime deletedOn, Boolean active) {
 }
