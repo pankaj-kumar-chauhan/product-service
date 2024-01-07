@@ -23,19 +23,42 @@ class ProductMapperTest {
     @Test
     void productToProductRecordTest() {
         LocalDateTime localDateTime = LocalDateTime.now();
-        Product product = new Product("testID", "testName",
-                new BigDecimal("20.30"), "testShortDesc", "testLongDesc",
-                "testThumbnail", "testImage", localDateTime, localDateTime, localDateTime,
+        Product product = new Product("6590722a46eb225aac1cfd22", "iPhone 14",
+                new BigDecimal("58999"), "iPhone 14 (128 GB) - Midnight", """
+                About this item
+                15.40 cm (6.1-inch) Super Retina XDR display
+                Advanced camera system for better photos in any light
+                Cinematic mode now in 4K Dolby Vision up to 30 fps
+                Action mode for smooth, steady, handheld videos
+                Vital safety technology — Crash Detection calls for help when you can’t
+                All-day battery life and up to 20 hours of video playback
+                Industry-leading durability features with Ceramic Shield and water resistance
+                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
+                iOS 16 offers even more ways to personalise, communicate and share
+                """,
+                "https://https://testimage.com/iphone14/image1.png.com/iphone14/thumbnail.png",
+                "https://testimage.com/iphone14/image1.png", localDateTime, localDateTime, localDateTime,
                 true);
 
         ProductRecord productRecord = productMapper.productToProductRecord(product);
-        assertEquals("testID", productRecord.id());
-        assertEquals("testName", productRecord.name());
-        assertEquals(new BigDecimal("20.30"), productRecord.price());
-        assertEquals("testShortDesc", productRecord.shortDesc());
-        assertEquals("testLongDesc", productRecord.longDesc());
-        assertEquals("testThumbnail", productRecord.thumbnail());
-        assertEquals("testImage", productRecord.image());
+        assertEquals("6590722a46eb225aac1cfd22", productRecord.id());
+        assertEquals("iPhone 14", productRecord.name());
+        assertEquals(new BigDecimal("58999"), productRecord.price());
+        assertEquals("iPhone 14 (128 GB) - Midnight", productRecord.shortDesc());
+        assertEquals("""
+                About this item
+                15.40 cm (6.1-inch) Super Retina XDR display
+                Advanced camera system for better photos in any light
+                Cinematic mode now in 4K Dolby Vision up to 30 fps
+                Action mode for smooth, steady, handheld videos
+                Vital safety technology — Crash Detection calls for help when you can’t
+                All-day battery life and up to 20 hours of video playback
+                Industry-leading durability features with Ceramic Shield and water resistance
+                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
+                iOS 16 offers even more ways to personalise, communicate and share
+                """, productRecord.longDesc());
+        assertEquals("https://https://testimage.com/iphone14/image1.png.com/iphone14/thumbnail.png", productRecord.thumbnail());
+        assertEquals("https://testimage.com/iphone14/image1.png", productRecord.image());
         assertEquals(localDateTime, productRecord.createdOn());
         assertEquals(localDateTime, productRecord.updatedOn());
         assertEquals(localDateTime, productRecord.deletedOn());
@@ -51,15 +74,35 @@ class ProductMapperTest {
     @Test
     void productsToProductRecordsTest() {
         LocalDateTime localDateTime = LocalDateTime.now();
-        Product product = new Product("testID", "testName",
-                new BigDecimal("20.30"), "testShortDesc", "testLongDesc",
-                "testThumbnail", "testImage", localDateTime, localDateTime, localDateTime,
+        Product product = new Product("6590722a46eb225aac1cfd22", "iPhone 14",
+                new BigDecimal("58999"), "iPhone 14 (128 GB) - Midnight", """
+                About this item
+                15.40 cm (6.1-inch) Super Retina XDR display
+                Advanced camera system for better photos in any light
+                Cinematic mode now in 4K Dolby Vision up to 30 fps
+                Action mode for smooth, steady, handheld videos
+                Vital safety technology — Crash Detection calls for help when you can’t
+                All-day battery life and up to 20 hours of video playback
+                Industry-leading durability features with Ceramic Shield and water resistance
+                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
+                iOS 16 offers even more ways to personalise, communicate and share
+                """,
+                "https://https://testimage.com/iphone14/image1.png.com/iphone14/thumbnail.png",
+                "https://testimage.com/iphone14/image1.png", localDateTime, localDateTime, localDateTime,
                 true);
 
         LocalDateTime localDateTime2 = LocalDateTime.now();
-        Product product2 = new Product("testID2", "testName2",
-                new BigDecimal("30.30"), "testShortDesc2", "testLongDesc2",
-                "testThumbnail2", "testImage2", localDateTime2, localDateTime2, localDateTime2,
+        Product product2 = new Product("6590722a46eb225aac1cfd23", "iPhone 13",
+                new BigDecimal("30.30"), "iPhone 13 (128GB) - Purple", """
+                About this item
+                15 cm (6.1-inch) Super Retina XDR display
+                Cinematic mode adds shallow depth of field and shifts focus automatically in your videos
+                Advanced dual-camera system with 12MP Wide and Ultra Wide cameras; Photographic Styles, Smart HDR 4, Night mode, 4K Dolby Vision HDR recording
+                12MP TrueDepth front camera with Night mode, 4K Dolby Vision HDR recording
+                A15 Bionic chip for lightning-fast performance
+                """,
+                "https://https://testimage.com/iphone14/image1.png.com/iphone13/thumbnail.png",
+                "https://testimage.com/iphone13/image1.png", localDateTime2, localDateTime2, localDateTime2,
                 false);
 
         List<ProductRecord> productRecords = productMapper.productsToProductRecords(Arrays.asList(product, product2));
@@ -67,26 +110,44 @@ class ProductMapperTest {
         assertEquals(2, productRecords.size());
 
         ProductRecord productRecord = productRecords.get(0);
-        assertEquals("testID", productRecord.id());
-        assertEquals("testName", productRecord.name());
-        assertEquals(new BigDecimal("20.30"), productRecord.price());
-        assertEquals("testShortDesc", productRecord.shortDesc());
-        assertEquals("testLongDesc", productRecord.longDesc());
-        assertEquals("testThumbnail", productRecord.thumbnail());
-        assertEquals("testImage", productRecord.image());
+        assertEquals("6590722a46eb225aac1cfd22", productRecord.id());
+        assertEquals("iPhone 14", productRecord.name());
+        assertEquals(new BigDecimal("58999"), productRecord.price());
+        assertEquals("iPhone 14 (128 GB) - Midnight", productRecord.shortDesc());
+        assertEquals("""
+                About this item
+                15.40 cm (6.1-inch) Super Retina XDR display
+                Advanced camera system for better photos in any light
+                Cinematic mode now in 4K Dolby Vision up to 30 fps
+                Action mode for smooth, steady, handheld videos
+                Vital safety technology — Crash Detection calls for help when you can’t
+                All-day battery life and up to 20 hours of video playback
+                Industry-leading durability features with Ceramic Shield and water resistance
+                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
+                iOS 16 offers even more ways to personalise, communicate and share
+                """, productRecord.longDesc());
+        assertEquals("https://https://testimage.com/iphone14/image1.png.com/iphone14/thumbnail.png", productRecord.thumbnail());
+        assertEquals("https://testimage.com/iphone14/image1.png", productRecord.image());
         assertEquals(localDateTime, productRecord.createdOn());
         assertEquals(localDateTime, productRecord.updatedOn());
         assertEquals(localDateTime, productRecord.deletedOn());
         assertTrue(productRecord.active());
 
         productRecord = productRecords.get(1);
-        assertEquals("testID2", productRecord.id());
-        assertEquals("testName2", productRecord.name());
+        assertEquals("6590722a46eb225aac1cfd23", productRecord.id());
+        assertEquals("iPhone 13", productRecord.name());
         assertEquals(new BigDecimal("30.30"), productRecord.price());
-        assertEquals("testShortDesc2", productRecord.shortDesc());
-        assertEquals("testLongDesc2", productRecord.longDesc());
-        assertEquals("testThumbnail2", productRecord.thumbnail());
-        assertEquals("testImage2", productRecord.image());
+        assertEquals("iPhone 13 (128GB) - Purple", productRecord.shortDesc());
+        assertEquals("""
+                About this item
+                15 cm (6.1-inch) Super Retina XDR display
+                Cinematic mode adds shallow depth of field and shifts focus automatically in your videos
+                Advanced dual-camera system with 12MP Wide and Ultra Wide cameras; Photographic Styles, Smart HDR 4, Night mode, 4K Dolby Vision HDR recording
+                12MP TrueDepth front camera with Night mode, 4K Dolby Vision HDR recording
+                A15 Bionic chip for lightning-fast performance
+                """, productRecord.longDesc());
+        assertEquals("https://https://testimage.com/iphone14/image1.png.com/iphone13/thumbnail.png", productRecord.thumbnail());
+        assertEquals("https://testimage.com/iphone13/image1.png", productRecord.image());
         assertEquals(localDateTime2, productRecord.createdOn());
         assertEquals(localDateTime2, productRecord.updatedOn());
         assertEquals(localDateTime2, productRecord.deletedOn());
@@ -102,17 +163,39 @@ class ProductMapperTest {
     @Test
     void productRecordToProductTest() {
         LocalDateTime localDateTime = LocalDateTime.now();
-        ProductRecord productRecord = new ProductRecord("testID", "testName", new BigDecimal("20.30"),
-                "testShortDesc", "testLongDesc", "testThumbnail", "testImage",
+        ProductRecord productRecord = new ProductRecord("6590722a46eb225aac1cfd22", "iPhone 14", new BigDecimal("58999"),
+                "iPhone 14 (128 GB) - Midnight", """
+                About this item
+                15.40 cm (6.1-inch) Super Retina XDR display
+                Advanced camera system for better photos in any light
+                Cinematic mode now in 4K Dolby Vision up to 30 fps
+                Action mode for smooth, steady, handheld videos
+                Vital safety technology — Crash Detection calls for help when you can’t
+                All-day battery life and up to 20 hours of video playback
+                Industry-leading durability features with Ceramic Shield and water resistance
+                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
+                iOS 16 offers even more ways to personalise, communicate and share
+                """, "https://https://testimage.com/iphone14/image1.png.com/iphone14/thumbnail.png", "https://testimage.com/iphone14/image1.png",
                 localDateTime, localDateTime, localDateTime, true);
         Product product = productMapper.productRecordToProduct(productRecord);
-        assertEquals("testID", product.getId());
-        assertEquals("testName", product.getName());
-        assertEquals(new BigDecimal("20.30"), product.getPrice());
-        assertEquals("testShortDesc", product.getShortDesc());
-        assertEquals("testLongDesc", product.getLongDesc());
-        assertEquals("testThumbnail", product.getThumbnail());
-        assertEquals("testImage", product.getImage());
+        assertEquals("6590722a46eb225aac1cfd22", product.getId());
+        assertEquals("iPhone 14", product.getName());
+        assertEquals(new BigDecimal("58999"), product.getPrice());
+        assertEquals("iPhone 14 (128 GB) - Midnight", product.getShortDesc());
+        assertEquals("""
+                About this item
+                15.40 cm (6.1-inch) Super Retina XDR display
+                Advanced camera system for better photos in any light
+                Cinematic mode now in 4K Dolby Vision up to 30 fps
+                Action mode for smooth, steady, handheld videos
+                Vital safety technology — Crash Detection calls for help when you can’t
+                All-day battery life and up to 20 hours of video playback
+                Industry-leading durability features with Ceramic Shield and water resistance
+                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
+                iOS 16 offers even more ways to personalise, communicate and share
+                """, product.getLongDesc());
+        assertEquals("https://https://testimage.com/iphone14/image1.png.com/iphone14/thumbnail.png", product.getThumbnail());
+        assertEquals("https://testimage.com/iphone14/image1.png", product.getImage());
         assertEquals(localDateTime, product.getCreatedOn());
         assertEquals(localDateTime, product.getUpdatedOn());
         assertEquals(localDateTime, product.getDeletedOn());
