@@ -1,46 +1,46 @@
-package com.cb.product.controller;
+package com.cb.product.repository;
 
-
-import com.cb.product.record.ProductRecord;
-import com.cb.product.service.ProductService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.cb.product.config.MongoConfig;
+import com.cb.product.entity.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.test.context.ContextConfiguration;
+import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
-@WebMvcTest(ProductController.class)
-class ProductControllerTest {
+@DataMongoTest
+@Testcontainers
+@ContextConfiguration(classes = {MongoConfig.class})
+@EnableMongoRepositories(basePackages = "com.cb.product.repository")
+class ProductRepositoryTest {
 
-    @Autowired
-    MockMvc mockMvc;
-
-    @MockBean
-    ProductService productService;
-
-    ProductRecord productRecord;
+    @Container
+    @ServiceConnection
+    public static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:7.0.0")
+            .withExposedPorts(27017);
 
     @Autowired
-    ObjectMapper objectMapper;
+    ProductRepository productRepository;
 
     @BeforeEach
     void setup() {
-        productRecord = new ProductRecord("6590722a46eb225aac1cfd22", "iPhone 14", new BigDecimal("58999"),
+        productRepository.deleteAll();
+    }
+
+    @Test
+    void saveTest() {
+        Product product = new Product(null, "iPhone 14", new BigDecimal("58999"),
                 "iPhone 14 (128 GB) - Midnight", """
                 About this item
                 15.40 cm (6.1-inch) Super Retina XDR display
@@ -54,11 +54,31 @@ class ProductControllerTest {
                 iOS 16 offers even more ways to personalise, communicate and share
                 """, "", "",
                 null, null, null, true);
+        Product savedProduct = productRepository.save(product);
+        assertNotNull(savedProduct.getId());
+        assertNotNull(savedProduct.getCreatedOn());
+        assertNotNull(savedProduct.getUpdatedOn());
+        assertEquals("iPhone 14", savedProduct.getName());
+        assertEquals(new BigDecimal("58999"), savedProduct.getPrice());
+        assertEquals("iPhone 14 (128 GB) - Midnight", savedProduct.getShortDesc());
+        assertEquals("""
+                About this item
+                15.40 cm (6.1-inch) Super Retina XDR display
+                Advanced camera system for better photos in any light
+                Cinematic mode now in 4K Dolby Vision up to 30 fps
+                Action mode for smooth, steady, handheld videos
+                Vital safety technology — Crash Detection calls for help when you can’t
+                All-day battery life and up to 20 hours of video playback
+                Industry-leading durability features with Ceramic Shield and water resistance
+                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
+                iOS 16 offers even more ways to personalise, communicate and share
+                """, savedProduct.getLongDesc());
+        assertTrue(savedProduct.getActive());
     }
 
     @Test
-    void saveTest() throws Exception {
-        productRecord = new ProductRecord(null, "iPhone 14", new BigDecimal("58999"),
+    void findByIdTest() {
+        Product product = new Product(null, "iPhone 14", new BigDecimal("58999"),
                 "iPhone 14 (128 GB) - Midnight", """
                 About this item
                 15.40 cm (6.1-inch) Super Retina XDR display
@@ -72,18 +92,37 @@ class ProductControllerTest {
                 iOS 16 offers even more ways to personalise, communicate and share
                 """, "", "",
                 null, null, null, true);
-        when(productService.save(productRecord)).thenReturn(productRecord);
-        mockMvc.perform(post("/api/v1/product")
-                        .content(objectMapper.writeValueAsString(productRecord))
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", is("iPhone 14")))
-                .andExpect(jsonPath("$.price", is(58999)))
-                .andExpect(jsonPath("$.shortDesc", is("iPhone 14 (128 GB) - Midnight")))
-                .andExpect(jsonPath("$.longDesc", is("""
+        Product savedProduct = productRepository.save(product);
+        Optional<Product> productFoundOpt = productRepository.findById(savedProduct.getId());
+        assertTrue(productFoundOpt.isPresent());
+        productFoundOpt.ifPresent(productFound -> {
+            assertNotNull(productFound.getId());
+            assertNotNull(productFound.getCreatedOn());
+            assertNotNull(productFound.getUpdatedOn());
+            assertEquals("iPhone 14", productFound.getName());
+            assertEquals(new BigDecimal("58999"), productFound.getPrice());
+            assertEquals("iPhone 14 (128 GB) - Midnight", productFound.getShortDesc());
+            assertEquals("""
+                    About this item
+                    15.40 cm (6.1-inch) Super Retina XDR display
+                    Advanced camera system for better photos in any light
+                    Cinematic mode now in 4K Dolby Vision up to 30 fps
+                    Action mode for smooth, steady, handheld videos
+                    Vital safety technology — Crash Detection calls for help when you can’t
+                    All-day battery life and up to 20 hours of video playback
+                    Industry-leading durability features with Ceramic Shield and water resistance
+                    A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
+                    iOS 16 offers even more ways to personalise, communicate and share
+                    """, productFound.getLongDesc());
+            assertTrue(productFound.getActive());
+        });
+
+    }
+
+    @Test
+    void findByIdInvalidIdTest() {
+        Product product = new Product(null, "iPhone 14", new BigDecimal("58999"),
+                "iPhone 14 (128 GB) - Midnight", """
                 About this item
                 15.40 cm (6.1-inch) Super Retina XDR display
                 Advanced camera system for better photos in any light
@@ -94,25 +133,17 @@ class ProductControllerTest {
                 Industry-leading durability features with Ceramic Shield and water resistance
                 A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
                 iOS 16 offers even more ways to personalise, communicate and share
-                """)))
-                .andExpect(jsonPath("$.active", is(true)));
+                """, "", "",
+                null, null, null, true);
+        Product savedProduct = productRepository.save(product);
+        Optional<Product> productFoundOpt = productRepository.findById(savedProduct.getId() + "99");
+        assertTrue(productFoundOpt.isEmpty());
     }
 
     @Test
-    void updateTest() throws Exception {
-        when(productService.save(productRecord)).thenReturn(productRecord);
-        mockMvc.perform(post("/api/v1/product")
-                        .content(objectMapper.writeValueAsString(productRecord))
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is("6590722a46eb225aac1cfd22")))
-                .andExpect(jsonPath("$.name", is("iPhone 14")))
-                .andExpect(jsonPath("$.price", is(58999)))
-                .andExpect(jsonPath("$.shortDesc", is("iPhone 14 (128 GB) - Midnight")))
-                .andExpect(jsonPath("$.longDesc", is("""
+    void findAllTest() {
+        Product product1 = new Product(null, "iPhone 14", new BigDecimal("58999"),
+                "iPhone 14 (128 GB) - Midnight", """
                 About this item
                 15.40 cm (6.1-inch) Super Retina XDR display
                 Advanced camera system for better photos in any light
@@ -123,39 +154,10 @@ class ProductControllerTest {
                 Industry-leading durability features with Ceramic Shield and water resistance
                 A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
                 iOS 16 offers even more ways to personalise, communicate and share
-                """)))
-                .andExpect(jsonPath("$.active", is(true)));
-    }
-
-    @Test
-    void getProductTest() throws Exception {
-        when(productService.getProduct("6590722a46eb225aac1cfd22")).thenReturn(productRecord);
-        mockMvc.perform(get("/api/v1/product/6590722a46eb225aac1cfd22"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is("6590722a46eb225aac1cfd22")))
-                .andExpect(jsonPath("$.name", is("iPhone 14")))
-                .andExpect(jsonPath("$.price", is(58999)))
-                .andExpect(jsonPath("$.shortDesc", is("iPhone 14 (128 GB) - Midnight")))
-                .andExpect(jsonPath("$.longDesc", is("""
-                About this item
-                15.40 cm (6.1-inch) Super Retina XDR display
-                Advanced camera system for better photos in any light
-                Cinematic mode now in 4K Dolby Vision up to 30 fps
-                Action mode for smooth, steady, handheld videos
-                Vital safety technology — Crash Detection calls for help when you can’t
-                All-day battery life and up to 20 hours of video playback
-                Industry-leading durability features with Ceramic Shield and water resistance
-                A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
-                iOS 16 offers even more ways to personalise, communicate and share
-                """)))
-                .andExpect(jsonPath("$.active", is(true)));
-    }
-
-    @Test
-    void getAllProductTest() throws Exception {
-        ProductRecord productRecord2 = new ProductRecord("6590722a46eb225aac1cfd23", "iPhone 13", new BigDecimal("49999"),
+                """, "", "",
+                null, null, null, true);
+        productRepository.save(product1);
+        Product product2 = new Product(null, "iPhone 13", new BigDecimal("48999"),
                 "iPhone 13 (128GB) - Purple", """
                 About this item
                 15 cm (6.1-inch) Super Retina XDR display
@@ -165,16 +167,17 @@ class ProductControllerTest {
                 A15 Bionic chip for lightning-fast performance
                 """, "", "",
                 null, null, null, false);
-        when(productService.getAllProducts()).thenReturn(Arrays.asList(productRecord, productRecord2));
-        mockMvc.perform(get("/api/v1/product"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[0].id", is("6590722a46eb225aac1cfd22")))
-                .andExpect(jsonPath("$.[0].name", is("iPhone 14")))
-                .andExpect(jsonPath("$.[0].price", is(58999)))
-                .andExpect(jsonPath("$.[0].shortDesc", is("iPhone 14 (128 GB) - Midnight")))
-                .andExpect(jsonPath("$.[0].longDesc", is("""
+        productRepository.save(product2);
+        List<Product> products = productRepository.findAll();
+
+        assertEquals(2, products.size());
+
+        Product productFound = products.get(0);
+        assertEquals(product1.getId(), productFound.getId());
+        assertEquals("iPhone 14", productFound.getName());
+        assertEquals(new BigDecimal("58999"), productFound.getPrice());
+        assertEquals("iPhone 14 (128 GB) - Midnight", productFound.getShortDesc());
+        assertEquals("""
                 About this item
                 15.40 cm (6.1-inch) Super Retina XDR display
                 Advanced camera system for better photos in any light
@@ -185,27 +188,27 @@ class ProductControllerTest {
                 Industry-leading durability features with Ceramic Shield and water resistance
                 A15 Bionic chip with 5-core GPU for lightning-fast performance. Superfast 5G cellular
                 iOS 16 offers even more ways to personalise, communicate and share
-                """)))
-                .andExpect(jsonPath("$.[0].active", is(true)))
-                .andExpect(jsonPath("$.[1].id", is("6590722a46eb225aac1cfd23")))
-                .andExpect(jsonPath("$.[1].name", is("iPhone 13")))
-                .andExpect(jsonPath("$.[1].price", is(49999)))
-                .andExpect(jsonPath("$.[1].shortDesc", is("iPhone 13 (128GB) - Purple")))
-                .andExpect(jsonPath("$.[1].longDesc", is("""
+                """, productFound.getLongDesc());
+        assertEquals(product1.getCreatedOn().withNano(0), productFound.getCreatedOn().withNano(0));
+        assertEquals(product1.getUpdatedOn().withNano(0), productFound.getUpdatedOn().withNano(0));
+        assertTrue(productFound.getActive());
+
+        productFound = products.get(1);
+        assertEquals(product2.getId(), productFound.getId());
+        assertEquals("iPhone 13", productFound.getName());
+        assertEquals(new BigDecimal("48999"), productFound.getPrice());
+        assertEquals("iPhone 13 (128GB) - Purple", productFound.getShortDesc());
+        assertEquals("""
                 About this item
                 15 cm (6.1-inch) Super Retina XDR display
                 Cinematic mode adds shallow depth of field and shifts focus automatically in your videos
                 Advanced dual-camera system with 12MP Wide and Ultra Wide cameras; Photographic Styles, Smart HDR 4, Night mode, 4K Dolby Vision HDR recording
                 12MP TrueDepth front camera with Night mode, 4K Dolby Vision HDR recording
                 A15 Bionic chip for lightning-fast performance
-                """)))
-                .andExpect(jsonPath("$.[1].active", is(false)));
+                """, productFound.getLongDesc());
+        assertEquals(product2.getCreatedOn().withNano(0), productFound.getCreatedOn().withNano(0));
+        assertEquals(product2.getUpdatedOn().withNano(0), productFound.getUpdatedOn().withNano(0));
+        assertFalse(productFound.getActive());
     }
 
-    @Test
-    void deleteProductTest() throws Exception {
-        mockMvc.perform(delete("/api/v1/product/6590722a46eb225aac1cfd22"))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
 }
