@@ -3,7 +3,7 @@ package com.cb.product.controller;
 import com.cb.product.record.ProductRecord;
 import com.cb.product.service.ProductService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,15 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/v1/product")
 public class ProductController {
 
     final ProductService productService;
-
-    @Autowired
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
 
     @PostMapping
     ResponseEntity<ProductRecord> save(@RequestBody @Valid ProductRecord productRecord) {

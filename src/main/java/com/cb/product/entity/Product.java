@@ -1,6 +1,9 @@
 package com.cb.product.entity;
 
 import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,8 +22,12 @@ public class Product {
 
     @Id
     private String id;
+    @NotBlank
     private String name;
+    @NotNull
+    @Min(0)
     private BigDecimal price;
+    @NotBlank
     private String shortDesc;
     private String longDesc;
 
